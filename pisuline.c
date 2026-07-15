@@ -11,6 +11,7 @@
 
 void strToDash(char *str);
 int handlePS0(void);
+void timeFailPrint(void);
 
 char timeFilePath[2014];
 time_t timeNow;
@@ -22,6 +23,7 @@ char colorCwd[]      = "\e[01;34m";
 char colorTimeNull[] = "\e[00;00;40m";
 char colorTimeSucc[] = "\e[00;30;42m";
 char colorTimeFail[] = "\e[00;00;41m";
+char *colorTime = colorTimeNull;
 
 // argv[1]: 0:ps0 1:ps1
 // argv[2]: resultcode (bash $?)
@@ -55,7 +57,6 @@ int main(int argc, char **argv) {
 		strToDash(cwd);
 	}
 
-	char *colorTime = colorTimeNull;
 	if (argc > 2) {
 		if (strcmp(argv[2], "0") == 0) {
 			colorTime=colorTimeSucc;
@@ -84,7 +85,7 @@ int main(int argc, char **argv) {
 	unlink(timeFilePath);
 	if (timeFail) {
 		colorTime = colorTimeNull;
-		printf("%s--h --m --.---s%s ", colorTime, colorReset);
+		timeFailPrint();
 	} else {
 		secs = nowClock.tv_sec - secs;
 		nsecs = nowClock.tv_nsec - nsecs;
@@ -93,8 +94,14 @@ int main(int argc, char **argv) {
 		cuteSecs = secs % 60;
 		cuteMins = secs / 60 % 60;
 		cuteHours = secs / 60 / 60;
-		
-		printf("%s%02luh %02um %02u.%03us%s ", colorTime, cuteHours, cuteMins, cuteSecs, cuteMsecs, colorReset);
+
+		if (cuteMsecs < 1000) {
+			printf("%s%02luh %02um %02u.%03us%s ", colorTime, cuteHours, cuteMins, cuteSecs, cuteMsecs, colorReset);
+		} else {
+			// TODO: Sometimes timevalues are just wrong
+			// no idea why
+			timeFailPrint();
+		}
 	}
 	
 	printf("%s%s@%s: %s%s%s$", colorUsr, username, hostname, colorCwd, cwd, colorReset);
@@ -124,4 +131,8 @@ void strToDash(char *str) {
 	str[0] = '-';
 	str[1] = 0;
 	return;
+}
+
+void timeFailPrint() {
+	printf("%s--h --m --.---s%s ", colorTime, colorReset);
 }
