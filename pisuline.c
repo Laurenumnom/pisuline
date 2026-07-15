@@ -111,7 +111,7 @@ int handlePS0(void) {
 		// TODO: fail handling
 		return -1;
 	}
-	if (fprintf(f, "%ld.%ld", nowClock.tv_sec, nowClock.tv_nsec) < 0) {
+	if (fprintf(f, "%lld.%ld", nowClock.tv_sec, nowClock.tv_nsec) < 0) {
 		// TODO: fail handling;
 		fclose(f);
 		return -1;
