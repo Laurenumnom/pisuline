@@ -88,20 +88,19 @@ int main(int argc, char **argv) {
 		timeFailPrint();
 	} else {
 		secs = nowClock.tv_sec - secs;
-		nsecs = nowClock.tv_nsec - nsecs;
+		if (nowClock.tv_nsec >= nsecs) {
+			nsecs = nowClock.tv_nsec - nsecs;
+		} else {
+			nsecs = nsecs - nowClock.tv_nsec;
+			secs -= 1;
+		}
 		
 		cuteMsecs = (nsecs+500)/1000000;
 		cuteSecs = secs % 60;
 		cuteMins = secs / 60 % 60;
 		cuteHours = secs / 60 / 60;
 
-		if (cuteMsecs < 1000) {
-			printf("%s%02luh %02um %02u.%03us%s ", colorTime, cuteHours, cuteMins, cuteSecs, cuteMsecs, colorReset);
-		} else {
-			// TODO: Sometimes timevalues are just wrong
-			// no idea why
-			timeFailPrint();
-		}
+		printf("%s%02luh %02um %02u.%03us%s ", colorTime, cuteHours, cuteMins, cuteSecs, cuteMsecs, colorReset);
 	}
 	
 	printf("%s%s@%s: %s%s%s$", colorUsr, username, hostname, colorCwd, cwd, colorReset);
