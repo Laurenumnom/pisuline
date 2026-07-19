@@ -1,6 +1,6 @@
 # Pisuline
 
-Simple, tiny yet fancy PS0 and PS1 bashline line with execution time tracking
+Simple, tiny yet fancy PS0 and PS1 bashline with execution time tracking
 and statuscode coloring.
 
 A picture is worth more than a thousand words.
