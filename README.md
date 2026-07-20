@@ -10,4 +10,4 @@ pisuline.c v1 doesn't have that many words.
 
 # Requirements
 
-For compiling with git support we need libgit2-devel
+For compiling with git support we need libgit2-devel, for running libgit2
