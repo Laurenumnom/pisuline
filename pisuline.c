@@ -1,9 +1,9 @@
 /* Author: Lauren Toivanen */
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <stdbool.h>
 #include <pwd.h>
+#include <sys/select.h>
 #include <unistd.h>
 #include <limits.h>
 #include <string.h>
@@ -20,10 +20,13 @@ struct timespec nowClock;
 char colorReset[]    = "\e[0m";
 char colorUsr[]      = "\e[01;31m";
 char colorCwd[]      = "\e[01;34m";
+char colorNow[] = "\e[0;90m";
+char colorGray[] = "\e[0;00;90m";
 char colorTimeNull[] = "\e[00;00;40m";
 char colorTimeSucc[] = "\e[00;30;42m";
 char colorTimeFail[] = "\e[00;00;41m";
 char *colorTime = colorTimeNull;
+char cwd[1024];
 
 // argv[1]: 0:ps0 1:ps1
 // argv[2]: resultcode (bash $?)
@@ -52,7 +55,6 @@ int main(int argc, char **argv) {
 		strToDash (hostname);
 	}
 
-	char cwd[1024];
 	if (getcwd(cwd, sizeof(cwd)) == NULL) {
 		strToDash(cwd);
 	}
@@ -67,7 +69,7 @@ int main(int argc, char **argv) {
 
 	FILE *f;
 	unsigned long secs;
-	unsigned long nsecs;
+	long nsecs;
 	bool timeFail = false;
 	unsigned int cuteMsecs = 0;
 	unsigned int cuteSecs = 0;
@@ -75,7 +77,7 @@ int main(int argc, char **argv) {
 	unsigned long cuteHours = 0;
 	f = fopen(timeFilePath, "r");
 	if (f) {
-		if (fscanf(f, "%lu.%lu", &secs, &nsecs) < 2) {
+		if (fscanf(f, "%lu.%li", &secs, &nsecs) < 2) {
 			timeFail = true;
 		}
 		fclose(f);
@@ -108,7 +110,6 @@ int main(int argc, char **argv) {
 }
 
 int handlePS0(void) {
-	char colorNow[] = "\e[0;90m";
 	printf("%s@%s%s", colorNow, ctime(&timeNow), colorReset);
 
 	FILE *f;
