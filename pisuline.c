@@ -8,10 +8,18 @@
 #include <limits.h>
 #include <string.h>
 #include <time.h>
+#include <git2.h>
+#include <git2/branch.h>
+#include <git2/errors.h>
+#include <git2/global.h>
+#include <git2/refs.h>
+#include <git2/repository.h>
+#include <git2/types.h>
 
 void strToDash(char *str);
 int handlePS0(void);
 void timeFailPrint(void);
+void getGitStatus(void);
 
 char timeFilePath[2014];
 time_t timeNow;
@@ -25,7 +33,12 @@ char colorGray[] = "\e[0;00;90m";
 char colorTimeNull[] = "\e[00;00;40m";
 char colorTimeSucc[] = "\e[00;30;42m";
 char colorTimeFail[] = "\e[00;00;41m";
+char colorGitOk[] = "\e[00;00;32m";
+char colorGitW[] = "\e[00;00;33m";
+char colorGitWW[] = "\e[00;00;31m";
+char *colorGit = colorGitW;
 char *colorTime = colorTimeNull;
+char gitStatus[24];
 char cwd[1024];
 
 // argv[1]: 0:ps0 1:ps1
@@ -104,8 +117,10 @@ int main(int argc, char **argv) {
 
 		printf("%s%02luh %02um %02u.%03us%s ", colorTime, cuteHours, cuteMins, cuteSecs, cuteMsecs, colorReset);
 	}
+
+	getGitStatus();
 	
-	printf("%s%s@%s: %s%s%s$", colorUsr, username, hostname, colorCwd, cwd, colorReset);
+	printf("%s%s@%s: %s%s%s%s$", colorUsr, username, hostname, colorCwd, cwd, gitStatus, colorReset);
 	return 0;
 }
 
@@ -135,4 +150,34 @@ void strToDash(char *str) {
 
 void timeFailPrint() {
 	printf("%s--h --m --.---s%s ", colorTime, colorReset);
+}
+
+void getGitStatus(void)
+{
+	char strbuf[24];
+	git_libgit2_init();
+	git_repository *repo;
+	if (git_repository_open_ext(&repo, cwd, 0, NULL) < 0) {
+		return;
+	}
+
+	git_reference *ref;
+	switch (git_repository_head(&ref, repo)) {
+	case GIT_EUNBORNBRANCH:
+		strcpy(strbuf, "<unborn>");
+		break;
+	case GIT_ENOTFOUND:
+		strcpy(strbuf, "<missing head>");
+		break;
+	case 0:
+		strncpy(strbuf, git_reference_shorthand(ref), sizeof(strbuf));
+		break;
+	default:
+		strcpy(strbuf, "<HEAD REF ERR>");
+	}
+	
+	snprintf(gitStatus, sizeof(gitStatus), " %s[%s]", colorGit, strbuf);
+	
+	git_reference_free(ref);
+	return;
 }

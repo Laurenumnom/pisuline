@@ -1,6 +1,6 @@
 CC ?= gcc
 pisuline: pisuline.c
-	$(CC) $(CFLAGS) pisuline.c -o pisuline
+	$(CC) $(CFLAGS) pisuline.c -o pisuline -lgit2
 clean:
 	rm -f pisuline
 install: pisuline
