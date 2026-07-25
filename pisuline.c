@@ -30,14 +30,14 @@ char colorUsr[]      = "\e[01;31m";
 char colorCwd[]      = "\e[01;34m";
 char colorNow[] = "\e[0;90m";
 char colorGray[] = "\e[0;00;90m";
-char colorTimeNull[] = "\e[00;00;40m";
+char *colorTimeNull = colorGray;
 char colorTimeSucc[] = "\e[00;30;42m";
 char colorTimeFail[] = "\e[00;00;41m";
 char colorGitOk[] = "\e[00;00;32m";
 char colorGitW[] = "\e[00;00;33m";
 char colorGitWW[] = "\e[00;00;31m";
 char *colorGit = colorGitW;
-char *colorTime = colorTimeNull;
+char *colorTime = colorGray;
 char gitStatus[24];
 char cwd[1024];
 
