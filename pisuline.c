@@ -38,7 +38,7 @@ char colorGitW[] = "\e[00;00;33m";
 char colorGitWW[] = "\e[00;00;31m";
 char *colorGit = colorGitW;
 char *colorTime = colorGray;
-char gitStatus[24];
+char gitStatus[66];
 char cwd[1024];
 
 // argv[1]: 0:ps0 1:ps1
@@ -154,7 +154,7 @@ void timeFailPrint() {
 
 void getGitStatus(void)
 {
-	char strbuf[24];
+	char strbuf[64];
 	git_libgit2_init();
 	git_repository *repo;
 	if (git_repository_open_ext(&repo, cwd, 0, NULL) < 0) {
