@@ -26,7 +26,7 @@ time_t timeNow;
 struct timespec nowClock;
 	
 char colorReset[]    = "\e[0m";
-char colorUsr[]      = "\e[01;31m";
+char colorUsr[9];
 char colorCwd[]      = "\e[01;34m";
 char colorNow[] = "\e[0;90m";
 char colorGray[] = "\e[0;00;90m";
@@ -66,6 +66,26 @@ int main(int argc, char **argv) {
 	char hostname[HOST_NAME_MAX + 1];
 	if (gethostname(hostname, sizeof(hostname)) != 0) {
 		strToDash (hostname);
+	}
+
+	if (getuid() == 0) {
+		strcpy(colorUsr, "\e[00;41m");
+	} else {
+		unsigned char userhostColorNum = 0;
+		for (unsigned int i = 0; i< sizeof(username); i++) {
+			if (username[i] == 0)
+				break;
+			else
+				userhostColorNum = (userhostColorNum+username[i])%6;
+		}
+		for (unsigned int i = 0; i< sizeof(hostname); i++) {
+			if (hostname[i] == 0)
+				break;
+			else
+				userhostColorNum = (userhostColorNum+hostname[i])%6;
+		}
+		userhostColorNum++;
+		sprintf(colorUsr, "\e[01;3%um", userhostColorNum);
 	}
 
 	if (getcwd(cwd, sizeof(cwd)) == NULL) {
@@ -120,7 +140,7 @@ int main(int argc, char **argv) {
 
 	getGitStatus();
 	
-	printf("%s%s@%s: %s%s%s%s$", colorUsr, username, hostname, colorCwd, cwd, gitStatus, colorReset);
+	printf("%s%s@%s%s: %s%s%s%s$", colorUsr, username, hostname, colorReset, colorCwd, cwd, gitStatus, colorReset);
 	return 0;
 }
 
