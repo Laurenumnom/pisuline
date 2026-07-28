@@ -26,6 +26,6 @@ jobs:
       #    archive: false
       #    if-no-files-found: error
       - name: release
-        uses: url: https://github.com/softprops/action-gh-release@v3
+        uses: "https://github.com/softprops/action-gh-release@v3"
         with:
           files: build/pisuline-amd64.deb
