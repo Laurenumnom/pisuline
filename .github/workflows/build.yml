@@ -1,6 +1,6 @@
 on:
   release:
-    type: [released]
+    types: [published]
 permissions:
   contents: write
 jobs:
