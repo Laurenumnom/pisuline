@@ -15,9 +15,9 @@ clean:
 	rm -f build/pisuline
 	rm -fr build/pisuline-deb-amd64/usr
 	rm -f build/pisuline-amd64.deb
-install: pisuline
+install: build/pisuline
 	mkdir -p /usr/share/pisuline
-	cp -f pisuline /usr/bin/
+	cp -f build/pisuline /usr/bin/
 	cp -f pisuline.sh /usr/share/pisuline/
 	chmod 755 /usr/bin/pisuline
 	chmod 755 /usr/share/pisuline/
