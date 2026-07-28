@@ -1,1 +1,3 @@
 pisuline
+*.deb
+build/pisuline-deb-amd64/usr/*

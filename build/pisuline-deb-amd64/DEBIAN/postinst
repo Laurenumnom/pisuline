@@ -1,0 +1,4 @@
+#!/bin/sh
+echo ---
+echo "don't forget to enable pisuline in your .bashrc by sourcing in end:"
+echo ". /usr/share/pisuline/pisuline.sh"

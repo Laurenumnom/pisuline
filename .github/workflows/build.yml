@@ -1,0 +1,31 @@
+on:
+  release:
+    type: [released]
+permissions:
+  contents: write
+jobs:
+  build-and-upload:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v6
+      - name: install build deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc make libgit2-dev
+          sudo apt-get clean
+      - name: compile
+        run: make
+      - name: make deb package
+        run: make deb-package
+      #- name: upload artefact
+      #  uses: actions/upload-artifact@v3
+      #  with:
+      #    name: pisuline-amd64.deb
+      #    path: build/pisuline-amd64.deb
+      #    archive: false
+      #    if-no-files-found: error
+      - name: release
+        uses: softprops/action-gh-release@v3
+        with:
+          files: build/pisuline-amd64.deb

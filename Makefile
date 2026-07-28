@@ -1,8 +1,20 @@
 CC ?= gcc
-pisuline: pisuline.c
-	$(CC) $(CFLAGS) pisuline.c -o pisuline -lgit2
+build/pisuline: pisuline.c
+	$(CC) $(CFLAGS) pisuline.c -o build/pisuline -lgit2
+deb-package: build/pisuline
+	mkdir -p build/pisuline-deb-amd64/usr/bin
+	mkdir -p build/pisuline-deb-amd64/usr/share/pisuline
+	cp -f build/pisuline build/pisuline-deb-amd64/usr/bin/
+	cp -f pisuline.sh build/pisuline-deb-amd64/usr/share/pisuline/
+	chmod 755 build/pisuline-deb-amd64/usr/bin
+	chmod 755 build/pisuline-deb-amd64/usr/share/pisuline
+	chmod 644 build/pisuline-deb-amd64/usr/share/pisuline/pisuline.sh
+	dpkg-deb --build --root-owner-group build/pisuline-deb-amd64 build/pisuline-amd64.deb
 clean:
 	rm -f pisuline
+	rm -f build/pisuline
+	rm -fr build/pisuline-deb-amd64/usr
+	rm -f build/pisuline-amd64.deb
 install: pisuline
 	mkdir -p /usr/share/pisuline
 	cp -f pisuline /usr/bin/

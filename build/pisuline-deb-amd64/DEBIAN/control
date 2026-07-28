@@ -1,0 +1,7 @@
+Package: pisuline
+Version: 2.0
+Maintainer: Lauren Toivanen
+Description: Super tiny execution time and exitcode tracking fanciness to your bash shell, written in C.
+Architecture: amd64
+Depends: libgit2-1.9
+Built-Using: libgit2-dev
